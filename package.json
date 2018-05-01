@@ -1,18 +1,14 @@
 {
-  "name": "debugger-for-chrome",
-  "displayName": "Debugger for Chrome",
-  "version": "4.3.0",
+  "name": "electron-debug",
+  "displayName": "Debugger for electron",
+  "version": "18.5.0",
   "icon": "images/icon.png",
   "description": "%extension.description%",
-  "author": {
-    "name": "Microsoft Corporation"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-chrome-debug"
+    "url": "https://github.com/Kode/vscode-electron-debug"
   },
-  "publisher": "msjsdiag",
-  "bugs": "https://github.com/microsoft/vscode-chrome-debug/issues",
+  "publisher": "kodetech",
   "engines": {
     "vscode": "^1.17.0"
   },
