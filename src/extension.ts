@@ -11,17 +11,17 @@ import * as nls from 'vscode-nls';
 const localize = nls.loadMessageBundle();
 
 export function activate(context: vscode.ExtensionContext) {
-    context.subscriptions.push(vscode.commands.registerCommand('extension.chrome-debug.toggleSkippingFile', toggleSkippingFile));
-    context.subscriptions.push(vscode.commands.registerCommand('extension.chrome-debug.toggleSmartStep', toggleSmartStep));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.electron-debug.toggleSkippingFile', toggleSkippingFile));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.electron-debug.toggleSmartStep', toggleSmartStep));
 
-    context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('chrome', new ChromeConfigurationProvider()));
+    context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('electron', new ChromeConfigurationProvider()));
 }
 
 export function deactivate() {
 }
 
 const DEFAULT_CONFIG = {
-    type: 'chrome',
+    type: 'electron',
     request: 'launch',
     name: localize('chrome.launch.name', 'Launch Chrome against localhost'),
     url: 'http://localhost:8080',
