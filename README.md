@@ -48,6 +48,8 @@ The extension operates in two modes - it can launch an instance of Chrome naviga
 
 Just like when using the Node debugger, you configure these modes with a `.vscode/launch.json` file in the root directory of your project. You can create this file manually, or Code will create one for you if you try to run your project, and it doesn't exist yet.
 
+> **Tip**: See recipes for debugging different frameworks here: https://github.com/Microsoft/vscode-recipes
+
 ### Launch
 Two example `launch.json` configs with `"request": "launch"`. You must specify either `file` or `url` to launch Chrome against a local file or a url. If you use a url, set `webRoot` to the directory that files are served from. This can be either an absolute path or a path using `${workspaceFolder}` (the folder open in Code). `webRoot` is used to resolve urls (like "http://localhost/app.js") to a file on disk (like `/Users/me/project/app.js`), so be careful that it's set correctly.
 ```json
@@ -73,9 +75,6 @@ Two example `launch.json` configs with `"request": "launch"`. You must specify e
 ```
 
 If you want to use a different installation of Chrome, you can also set the `runtimeExecutable` field with a path to the Chrome app.
-
-> Chrome user profile note: Normally, if Chrome is already running when you start debugging with a launch config, then the new instance won't start in remote debugging mode. So by default, the extension launches Chrome with a separate user profile in a temp folder. Use the `userDataDir` launch config field to override or disable this.
-> If you are using the `runtimeExecutable` field, this isn't enabled by default, but you can forcibly enable it with `"userDataDir": true`.
 
 ### Attach
 With `"request": "attach"`, you must launch Chrome with remote debugging enabled in order for the extension to attach to it. Here's how to do that:
@@ -119,6 +118,14 @@ An example `launch.json` file for an "attach" config.
     ]
 }
 ```
+
+### Chrome user profile note (`Cannot connect to the target: connect ECONNREFUSED`)
+
+Normally, if Chrome is already running when you start debugging with a launch config, then the new instance won't start in remote debugging mode. So by default, the extension launches Chrome with a separate user profile in a temp folder. Use the `userDataDir` launch config field to override or disable this. If you are using the `runtimeExecutable` field, this isn't enabled by default, but you can forcibly enable it with `"userDataDir": true`.
+
+If you are using an attach config, make sure you close other running instances of Chrome before launching a new one with `--remote-debugging-port`. Or, use a new profile with the `--user-data-dir` flag yourself.
+
+For other troubleshooting tips for this error, [see below](#cannot-connect-to-the-target:-connect-ECONNREFUSED-127.0.0.1:9222).
 
 ### Other targets
 You can also theoretically attach to other targets that support the same Chrome Debugging protocol, such as Electron or Cordova. These aren't officially supported, but should work with basically the same steps. You can use a launch config by setting `"runtimeExecutable"` to a program or script to launch, or an attach config to attach to a process that's already running. If Code can't find the target, you can always verify that it is actually available by navigating to `http://localhost:<port>/json` in a browser. If you get a response with a bunch of JSON, and can find your target page in that JSON, then the target should be available to this extension.
@@ -199,10 +206,10 @@ If you have a sourcemapping issue, please see https://github.com/Microsoft/vscod
 
 ### Cannot connect to the target: connect ECONNREFUSED 127.0.0.1:9222
 This message means that the extension can't attach to Chrome, because Chrome wasn't launched in debug mode. Here are some things to try:
-* If using an `attach` type config, ensure that you launched Chrome using `--remote-debugging-port=9222`. And if there was already a running instance, see the above.
+* If using an `attach` type config, ensure that you launched Chrome using `--remote-debugging-port=9222`. And if there was already a running instance, close it first or see note about `--user-data-dir` above.
 * Ensure that the `port` property matches the port on which Chrome is listening for remote debugging connections. This is `9222` by default. Ensure nothing else is using this port, including your web server. If something else on your computer responds at `http://localhost:9222`, then set a different port.
-* If all else fails, try to navigate to `http://localhost:<port>/json` in a browser when you see this message - if there is no response, then something is wrong upstream of the extension. If there is a page of JSON returned, then ensure that the `port` in the launch config matches the port in that url.
 * If using a `launch` type config with the `userDataDir` option explicitly disabled, close other running instances of Chrome - if Chrome is already running, the extension may not be able to attach, when using launch mode. Chrome can even stay running in the background when all its windows are closed, which will interfere - check the taskbar or kill the process if necessary.
+* If all else fails, try to navigate to `http://localhost:<port>/json` in a browser when you see this message - if there is no response, then something is wrong upstream of the extension. If there is a page of JSON returned, then ensure that the `port` in the launch config matches the port in that url.
 
 ### General things to try if you're having issues:
 * Ensure `webRoot` is set correctly if needed
@@ -212,6 +219,7 @@ This message means that the extension can't attach to Chrome, because Chrome was
 * Ensure the code in Chrome matches the code in Code. Chrome may cache an old version.
 * If your breakpoints bind, but aren't hit, try refreshing the page. If you set a breakpoint in code that runs immediately when the page loads, you won't hit that breakpoint until you refresh the page.
 * File a bug in this extension's [GitHub repo](https://github.com/Microsoft/vscode-chrome-debug), including the debug adapter log file. Create the log file by setting the "trace" field in your launch config and reproducing the issue. It will print the path to the log file at the top of the Debug Console. You can drag this file into an issue comment to upload it to GitHub.
+* If you're using Webpack, we recommend using the `"devtool": "source-map"` option as the others produce lower-fidelity sourcemaps and you may have issues setting breakpoints.
 
 ### The `.scripts` command
 This feature is extremely useful for understanding how the extension maps files in your workspace to files running in Chrome. You can enter `.scripts` in the Debug Console to see a listing of all scripts loaded in the runtime, their sourcemap information, and how they are mapped to files on disk. The format is like this:
@@ -234,7 +242,10 @@ Example:
     - /src/test2.ts (/Users/me/project/wwwroot/src/test2.ts)
 ```
 
+If the paths of your source files show as not being resolved correctly here, you may have to change `sourceMapPathOverrides` or `webRoot` to help the debugger resolve them to real paths on disk.
+
 If you are wondering what a script is, for example, that 'eval' script, you can also use `.scripts` to get its contents: `.scripts eval://43`.
 
-===
+---
+
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.

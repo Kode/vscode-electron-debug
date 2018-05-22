@@ -150,7 +150,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 
     protected hookConnectionEvents(): void {
         super.hookConnectionEvents();
-        this.chrome.Page.onFrameNavigated(params => this.onFrameNavigated(params));
+        this.chrome.Page.on('frameNavigated', params => this.onFrameNavigated(params));
     }
 
     protected onFrameNavigated(params: Crdp.Page.FrameNavigatedEvent): void {
@@ -243,6 +243,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
                   "Versions.Target.Revision" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
                   "Versions.Target.UserAgent" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
                   "Versions.Target.V8" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+                  "Versions.Target.V<NUMBER>" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
                   "Versions.Target.Project" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
                   "Versions.Target.Version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
                   "Versions.Target.Product" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },

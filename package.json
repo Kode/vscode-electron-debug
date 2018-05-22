@@ -1,7 +1,7 @@
 {
   "name": "electron-debug",
   "displayName": "Debugger for electron",
-  "version": "18.5.0",
+  "version": "18.5.1",
   "icon": "images/icon.png",
   "description": "%extension.description%",
   "repository": {
@@ -20,7 +20,7 @@
   ],
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
-    "vscode-chrome-debug-core": "^4.1.4",
+    "vscode-chrome-debug-core": "^5.0.3",
     "vscode-debugadapter": "^1.28.0-pre.2",
     "vscode-nls": "^3.2.1"
   },
@@ -31,6 +31,7 @@
     "@types/source-map": "^0.1.27",
     "@types/tmp": "0.0.32",
     "concurrently": "^3.1.0",
+    "del": "^3.0.0",
     "event-stream": "^3.3.4",
     "glob": "^7.1.1",
     "gulp": "^3.9.1",
@@ -39,16 +40,17 @@
     "gulp-typescript": "^4.0.1",
     "gulp-util": "^3.0.8",
     "http-server": "^0.10.0",
+    "minimist": "^1.2.0",
     "mocha": "^3.0.2",
     "mockery": "^1.7.0",
     "run-sequence": "^2.2.0",
     "tmp": "0.0.31",
     "ts-loader": "^1.0.0",
     "tslint": "^5.7.0",
-    "typemoq": "^0.3.3",
+    "typemoq": "^2.1.0",
     "typescript": "^2.7.2",
     "vsce": "^1.32.0",
-    "vscode": "^1.0.3",
+    "vscode": "^1.1.17",
     "vscode-chrome-debug-core-testsupport": "^3.20.0",
     "vscode-debugadapter-testsupport": "1.24.0",
     "vscode-debugprotocol": "^1.28.0-pre.1",
@@ -71,7 +73,8 @@
     "postinstall": "node ./node_modules/vscode/bin/install",
     "patch": "npm version patch -m '%s'",
     "minor": "npm version minor -m '%s'",
-    "major": "npm version major -m '%s'"
+    "major": "npm version major -m '%s'",
+    "package": "gulp package"
   },
   "contributes": {
     "breakpoints": [
@@ -389,12 +392,12 @@
         {
           "command": "extension.chrome-debug.toggleSkippingFile",
           "group": "navigation",
-          "when": "inDebugMode && debugType == 'chrome'"
+          "when": "inDebugMode && debugType == 'chrome' && callStackItemType == 'stackFrame'"
         },
         {
           "command": "extension.chrome-debug.toggleSmartStep",
           "group": "navigation",
-          "when": "inDebugMode && debugType == 'chrome'"
+          "when": "inDebugMode && debugType == 'chrome' && callStackItemType == 'stackFrame'"
         }
       ]
     },
