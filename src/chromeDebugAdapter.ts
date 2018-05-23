@@ -114,8 +114,8 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
                 launchUrl = null;
             }
 
-            this._chromeProc = await this.spawnChrome(runtimeExecutable, chromeArgs, chromeEnv, chromeWorkingDir, !!args.runtimeExecutable,
-                 true);
+            this._chromeProc = await this.spawnChrome(runtimeExecutable, chromeArgs, chromeEnv, chromeWorkingDir, true,
+                 false);
             if (this._chromeProc) {
                 this._chromeProc.on('error', (err) => {
                     const errMsg = 'Electron error: ' + err;
