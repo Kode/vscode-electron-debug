@@ -6,12 +6,12 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import {utils as coreUtils, chromeConnection } from 'vscode-chrome-debug-core';
 
-export function getElectronPath(): string {
+export function getElectronPath(dir: string): string {
     const platform = coreUtils.getPlatform();
     if (platform === coreUtils.Platform.OSX) {
         return null;
     } else if (platform === coreUtils.Platform.Windows) {
-        return path.join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, 'electron', 'win32', 'electron.exe');
+        return path.join(dir, 'electron.exe');
     } else {
         return null;
     }

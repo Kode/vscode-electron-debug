@@ -2,6 +2,8 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
+import { join } from 'path';
+
 import * as vscode from 'vscode';
 import * as Core from 'vscode-chrome-debug-core';
 
@@ -66,6 +68,7 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
             }
         }
 
+        config.electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, 'electron', 'win32');
         return config;
     }
 }

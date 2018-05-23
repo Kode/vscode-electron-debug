@@ -37,7 +37,6 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
     private _userRequestedUrl: string;
 
     public initialize(args: DebugProtocol.InitializeRequestArguments): VSDebugProtocolCapabilities {
-        coreUtils.errP('hello');
         this._overlayHelper = new utils.DebounceHelper(/*timeoutMs=*/200);
         const capabilities: VSDebugProtocolCapabilities = super.initialize(args);
         capabilities.supportsRestartRequest = true;
@@ -67,23 +66,23 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
                 runtimeExecutable = re;
             }
 
-            runtimeExecutable = runtimeExecutable || utils.getElectronPath();
+            runtimeExecutable = runtimeExecutable || utils.getElectronPath(args.electronDir);
             if (!runtimeExecutable) {
                 return coreUtils.errP(localize('attribute.chrome.missing', "Can't find Chrome - install it or set the \"runtimeExecutable\" field in the launch config."));
             }
 
             // Start with remote debugging enabled
             const port = args.port || Math.floor((Math.random() * 10000) + 10000);
-            const chromeArgs: string[] = ['--chromedebug'];
+            const chromeArgs: string[] = [];
             const chromeEnv: {[key: string]: string} = args.env || null;
-            const chromeWorkingDir: string = args.cwd || null;
+            const chromeWorkingDir: string = args.cwd || args.electronDir;
+
+            chromeArgs.push(args.file);
 
             if (!args.noDebug) {
-                chromeArgs.push('--remote-debugging-port=' + port);
+                chromeArgs.push('--chromedebug', '--remote-debugging-port=' + port);
             }
 
-            // Also start with extra stuff disabled
-            chromeArgs.push(...['--no-first-run', '--no-default-browser-check']);
             if (args.runtimeArgs) {
                 chromeArgs.push(...args.runtimeArgs);
             }
@@ -95,10 +94,6 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
                 (typeof args.userDataDir === 'undefined' && !args.runtimeExecutable)
             ) {
                 args.userDataDir = path.join(os.tmpdir(), `vscode-chrome-debug-userdatadir_${port}`);
-            }
-
-            if (args.userDataDir) {
-                chromeArgs.push('--user-data-dir=' + args.userDataDir);
             }
 
             if (args._clientOverlayPausedMessage) {
@@ -116,14 +111,10 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
                 // We store the launch file/url provided and temporarily launch and attach to about:blank page. Once we receive configurationDone() event, we redirect the page to this file/url
                 // This is done to facilitate hitting breakpoints on load
                 this._userRequestedUrl = launchUrl;
-                launchUrl = 'about:blank';
+                launchUrl = null;
             }
 
-            if (launchUrl) {
-                chromeArgs.push(launchUrl);
-            }
-
-            /*this._chromeProc = await this.spawnChrome(runtimeExecutable, chromeArgs, chromeEnv, chromeWorkingDir, !!args.runtimeExecutable,
+            this._chromeProc = await this.spawnChrome(runtimeExecutable, chromeArgs, chromeEnv, chromeWorkingDir, !!args.runtimeExecutable,
                  true);
             if (this._chromeProc) {
                 this._chromeProc.on('error', (err) => {
@@ -134,8 +125,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
             }
 
             return args.noDebug ? undefined :
-                this.doAttach(port, launchUrl || args.urlFilter, args.address, args.timeout, undefined, args.extraCRDPChannelPort);*/
-            return null;
+                this.doAttach(port, launchUrl || args.urlFilter, args.address, args.timeout, undefined, args.extraCRDPChannelPort);
         });
     }
 
