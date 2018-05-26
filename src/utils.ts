@@ -9,11 +9,11 @@ import {utils as coreUtils, chromeConnection } from 'vscode-chrome-debug-core';
 export function getElectronPath(dir: string): string {
     const platform = coreUtils.getPlatform();
     if (platform === coreUtils.Platform.OSX) {
-        return null;
+        return path.join(dir, 'macOS', 'Electron.app', 'Contents', 'MacOS', 'Electron');
     } else if (platform === coreUtils.Platform.Windows) {
         return path.join(dir, 'win32', 'electron.exe');
     } else {
-        return null;
+        return path.join(dir, 'linux-x64', 'electron');
     }
 }
 

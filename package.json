@@ -1,7 +1,7 @@
 {
   "name": "electron-debug",
   "displayName": "Debugger for Electron",
-  "version": "18.5.1",
+  "version": "18.5.2",
   "icon": "images/icon.png",
   "description": "%extension.description%",
   "repository": {
