@@ -68,7 +68,7 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
             }
         }
 
-        config.electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, 'electron', 'win32');
+        config.electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, 'electron');
         return config;
     }
 }

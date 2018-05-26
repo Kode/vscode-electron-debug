@@ -11,7 +11,7 @@ export function getElectronPath(dir: string): string {
     if (platform === coreUtils.Platform.OSX) {
         return null;
     } else if (platform === coreUtils.Platform.Windows) {
-        return path.join(dir, 'electron.exe');
+        return path.join(dir, 'win32', 'electron.exe');
     } else {
         return null;
     }

@@ -57,6 +57,9 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 
         return super.launch(args, telemetryPropertyCollector).then(async () => {
             let runtimeExecutable: string;
+            if (args.shouldLaunchChromeUnelevated !== undefined) {
+                telemetryPropertyCollector.addTelemetryProperty('shouldLaunchChromeUnelevated', args.shouldLaunchChromeUnelevated.toString());
+            }
             if (args.runtimeExecutable) {
                 const re = findExecutable(args.runtimeExecutable);
                 if (!re) {
@@ -75,14 +78,18 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
             const port = args.port || Math.floor((Math.random() * 10000) + 10000);
             const chromeArgs: string[] = [];
             const chromeEnv: {[key: string]: string} = args.env || null;
-            const chromeWorkingDir: string = args.cwd || args.electronDir;
+            const chromeWorkingDir: string = args.cwd || null;
 
-            chromeArgs.push(args.file);
-
-            if (!args.noDebug) {
-                chromeArgs.push('--chromedebug', '--remote-debugging-port=' + port);
+            if (args.appDir) {
+                chromeArgs.push(args.appDir);
             }
 
+            if (!args.noDebug) {
+                chromeArgs.push('--remote-debugging-port=' + port);
+            }
+
+            // Also start with extra stuff disabled
+            chromeArgs.push(...['--no-first-run', '--no-default-browser-check']);
             if (args.runtimeArgs) {
                 chromeArgs.push(...args.runtimeArgs);
             }
@@ -90,10 +97,13 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
             // Set a default userDataDir, if the user opted in explicitly with 'true' or if args.userDataDir is not set (only when runtimeExecutable is not set).
             // Can't set it automatically with runtimeExecutable because it may not be desired with Electron, other runtimes, random scripts.
             if (
-                args.userDataDir === true ||
-                (typeof args.userDataDir === 'undefined' && !args.runtimeExecutable)
+                args.userDataDir === true
             ) {
                 args.userDataDir = path.join(os.tmpdir(), `vscode-chrome-debug-userdatadir_${port}`);
+            }
+
+            if (args.userDataDir) {
+                chromeArgs.push('--user-data-dir=' + args.userDataDir);
             }
 
             if (args._clientOverlayPausedMessage) {
@@ -111,11 +121,15 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
                 // We store the launch file/url provided and temporarily launch and attach to about:blank page. Once we receive configurationDone() event, we redirect the page to this file/url
                 // This is done to facilitate hitting breakpoints on load
                 this._userRequestedUrl = launchUrl;
-                launchUrl = null;
+                launchUrl = 'about:blank';
+            }
+
+            if (launchUrl) {
+                chromeArgs.push(launchUrl);
             }
 
             this._chromeProc = await this.spawnChrome(runtimeExecutable, chromeArgs, chromeEnv, chromeWorkingDir, true,
-                 false);
+                 args.shouldLaunchChromeUnelevated);
             if (this._chromeProc) {
                 this._chromeProc.on('error', (err) => {
                     const errMsg = 'Electron error: ' + err;
@@ -137,10 +151,10 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
         return super.attach(args);
     }
 
-    // protected hookConnectionEvents(): void {
-    //    super.hookConnectionEvents();
-    //    this.chrome.Page.on('frameNavigated', params => this.onFrameNavigated(params));
-    // }
+    protected hookConnectionEvents(): void {
+        super.hookConnectionEvents();
+        this.chrome.Page.on('frameNavigated', params => this.onFrameNavigated(params));
+    }
 
     protected onFrameNavigated(params: Crdp.Page.FrameNavigatedEvent): void {
         if (this._userRequestedUrl) {
