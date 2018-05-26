@@ -25,9 +25,8 @@ export function deactivate() {
 const DEFAULT_CONFIG = {
     type: 'electron',
     request: 'launch',
-    name: localize('chrome.launch.name', 'Launch Chrome against localhost'),
-    url: 'http://localhost:8080',
-    webRoot: '${workspaceFolder}'
+    name: localize('chrome.launch.name', 'Launch Electron against the workspace'),
+    appDir: '${workspaceFolder}'
 };
 
 export class ChromeConfigurationProvider implements vscode.DebugConfigurationProvider {

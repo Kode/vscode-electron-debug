@@ -424,7 +424,13 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
             if (env) {
                 options['env'] = {
                     ...process.env,
-                    ...env
+                    ...env,
+                    'ELECTRON_DISABLE_SECURITY_WARNINGS': 1
+                };
+            } else {
+                options['env'] = {
+                    ...process.env,
+                    'ELECTRON_DISABLE_SECURITY_WARNINGS': 1
                 };
             }
             if (cwd) {

@@ -399,24 +399,24 @@
     "menus": {
       "debug/callstack/context": [
         {
-          "command": "extension.chrome-debug.toggleSkippingFile",
+          "command": "extension.electron-debug.toggleSkippingFile",
           "group": "navigation",
-          "when": "inDebugMode && debugType == 'chrome' && callStackItemType == 'stackFrame'"
+          "when": "inDebugMode && debugType == 'electron' && callStackItemType == 'stackFrame'"
         },
         {
-          "command": "extension.chrome-debug.toggleSmartStep",
+          "command": "extension.electron-debug.toggleSmartStep",
           "group": "navigation",
-          "when": "inDebugMode && debugType == 'chrome' && callStackItemType == 'stackFrame'"
+          "when": "inDebugMode && debugType == 'electron' && callStackItemType == 'stackFrame'"
         }
       ]
     },
     "commands": [
       {
-        "command": "extension.chrome-debug.toggleSkippingFile",
+        "command": "extension.electron-debug.toggleSkippingFile",
         "title": "%chrome.toggleSkipping.title%"
       },
       {
-        "command": "extension.chrome-debug.toggleSmartStep",
+        "command": "extension.electron-debug.toggleSmartStep",
         "title": "%chrome.toggleSmartStep.title%"
       }
     ],
@@ -425,7 +425,7 @@
         "command": "extension.node-debug.pickLoadedScript",
         "key": "ctrl+f4",
         "mac": "cmd+f4",
-        "when": "debugType == 'chrome'"
+        "when": "debugType == 'electron'"
       }
     ]
   }
