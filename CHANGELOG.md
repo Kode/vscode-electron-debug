@@ -1,6 +1,10 @@
+### 18.5.4
+
+Add configuration snippets
+
 ### 18.5.3
 
-Fixes dependencies
+Fix dependencies
 
 ### 18.5.2
 

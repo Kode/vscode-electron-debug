@@ -1,7 +1,7 @@
 {
   "name": "electron-debug",
   "displayName": "Debugger for Electron",
-  "version": "18.5.3",
+  "version": "18.5.4",
   "icon": "images/icon.png",
   "description": "%extension.description%",
   "repository": {
@@ -184,25 +184,24 @@
         ],
         "configurationSnippets": [
           {
-            "label": "Chrome: Launch",
-            "description": "Launch Chrome to debug a URL",
+            "label": "Electron: Launch Workspace",
+            "description": "Launch Electron in the workspace",
             "body": {
-              "type": "chrome",
+              "type": "electron",
               "request": "launch",
-              "name": "Launch Chrome",
-              "url": "http://localhost:8080",
-              "webRoot": "^\"${2:\\${workspaceFolder\\}}\""
+              "name": "Launch Electron here",
+              "sourceMaps": true
             }
           },
           {
-            "label": "Chrome: Attach",
-            "description": "Attach to an instance of Chrome already in debug mode",
+            "label": "Electron: Launch",
+            "description": "Launch Elevtron",
             "body": {
-              "type": "chrome",
-              "request": "attach",
-              "name": "Attach to Chrome",
-              "port": 9222,
-              "webRoot": "^\"${2:\\${workspaceFolder\\}}\""
+              "type": "electron",
+              "request": "launch",
+              "name": "Launch Electron",
+              "appDir": "${workspaceFolder}/somwehere/",
+              "sourceMaps": true
             }
           }
         ],
