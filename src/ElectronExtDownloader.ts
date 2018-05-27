@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as util from './common';
+import * as vscode from 'vscode';
 import { PlatformInformation } from './platform';
 import { DownloadAndInstallPackages } from './packageManager/PackageManager';
 import { Package } from './packageManager/Package';
@@ -25,6 +26,8 @@ export class ElectronExtDownloader {
         let installationStage = 'touchBeginFile';
 
         try {
+            vscode.window.showInformationMessage('Downloading Electron...');
+            let message = vscode.window.setStatusBarMessage('Downloading Electron...');
             await util.touchInstallFile(util.InstallFileType.Begin);
             // Display platform information and RID
             // this.eventStream.post(new LogPlatformInfo(this.platformInfo));
@@ -34,6 +37,7 @@ export class ElectronExtDownloader {
             await DownloadAndInstallPackages(runTimeDependencies, this.networkSettingsProvider, this.platformInfo);
             installationStage = 'touchLockFile';
             await util.touchInstallFile(util.InstallFileType.Lock);
+            message.dispose();
             return true;
         } catch (error) {
             return false;
