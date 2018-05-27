@@ -4,6 +4,13 @@
 
 import { join } from 'path';
 
+import { ElectronExtDownloader } from './ElectronExtDownloader';
+import ElectronExtensionExports from './ElectronExtensionExports';
+import { PlatformInformation } from './platform';
+import { EventStream } from './EventStream';
+import { vscodeNetworkSettingsProvider, NetworkSettingsProvider } from './NetworkSettings';
+import * as util from './common';
+
 import * as vscode from 'vscode';
 import * as Core from 'vscode-chrome-debug-core';
 
@@ -12,7 +19,24 @@ import { targetFilter } from './utils';
 import * as nls from 'vscode-nls';
 const localize = nls.loadMessageBundle();
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+    const extensionId = 'kodetech.electron-debug';
+    const extension = vscode.extensions.getExtension<ElectronExtensionExports>(extensionId);
+    util.setExtensionPath(extension.extensionPath);
+
+    const eventStream = new EventStream();
+
+    let platformInfo: PlatformInformation;
+    try {
+        platformInfo = await PlatformInformation.GetCurrent();
+    } catch (error) {
+        // eventStream.post(new ActivationFailure());
+    }
+
+    let networkSettingsProvider = vscodeNetworkSettingsProvider(vscode);
+
+    let runtimeDependenciesExist = await ensureRuntimeDependencies(extension, eventStream, platformInfo, networkSettingsProvider);
+
     context.subscriptions.push(vscode.commands.registerCommand('extension.electron-debug.toggleSkippingFile', toggleSkippingFile));
     context.subscriptions.push(vscode.commands.registerCommand('extension.electron-debug.toggleSmartStep', toggleSmartStep));
 
@@ -67,7 +91,7 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
             }
         }
 
-        config.electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, 'electron');
+        config.electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, '.electron', '2.0.2');
         return config;
     }
 }
@@ -113,4 +137,16 @@ function unescapeTargetTitle(title: string): string {
         .replace(/&gt;/g, '>')
         .replace(/&#39;/g, `'`)
         .replace(/&quot;/g, '"');
+}
+
+async function ensureRuntimeDependencies(extension: vscode.Extension<ElectronExtensionExports>, eventStream: EventStream, platformInfo: PlatformInformation, networkSettingsProvider: NetworkSettingsProvider): Promise<boolean> {
+    return util.installFileExists(util.InstallFileType.Lock)
+        .then(exists => {
+            if (!exists) {
+                const downloader = new ElectronExtDownloader(networkSettingsProvider, eventStream, extension.packageJSON, platformInfo);
+                return downloader.installRuntimeDependencies();
+            } else {
+                return true;
+            }
+        });
 }

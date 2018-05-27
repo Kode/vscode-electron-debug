@@ -22,7 +22,11 @@
   "dependencies": {
     "vscode-chrome-debug-core": "^5.0.3",
     "vscode-debugadapter": "^1.28.0-pre.2",
-    "vscode-nls": "^3.2.1"
+    "vscode-nls": "^3.2.1",
+    "http-proxy-agent": "2.1.0",
+    "https-proxy-agent": "2.2.1",
+    "rxjs": "5.5.6",
+    "node-filter-async": "0.0.4"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.35",
@@ -56,6 +60,75 @@
     "vscode-debugprotocol": "^1.28.0-pre.1",
     "vscode-nls-dev": "^3.0.7"
   },
+  "runtimeDependencies": [
+    {
+      "description": "Electron for Windows (x86)",
+      "url": "https://github.com/electron/electron/releases/download/v2.0.2/electron-v2.0.2-win32-ia32.zip",
+      "installPath": ".electron/2.0.2",
+      "platforms": [
+        "win32"
+      ],
+      "architectures": [
+        "x86"
+      ],
+      "platformId": "win-x86"
+    },
+    {
+      "description": "Electron for Windows (x64)",
+      "url": "https://github.com/electron/electron/releases/download/v2.0.2/electron-v2.0.2-win32-x64.zip",
+      "installPath": ".electron/2.0.2",
+      "platforms": [
+        "win32"
+      ],
+      "architectures": [
+        "x86_64"
+      ],
+      "platformId": "win-x64"
+    },
+    {
+      "description": "Electron for macOS",
+      "url": "https://github.com/electron/electron/releases/download/v2.0.2/electron-v2.0.2-darwin-x64.zip",
+      "installPath": ".electron/2.0.2",
+      "platforms": [
+        "darwin"
+      ],
+      "binaries": [
+        "./Electron.app/Contents/MacOS/Electron"
+      ],
+      "platformId": "osx"
+    },
+    {
+      "description": "Electron for Linux (x86)",
+      "url": "https://github.com/electron/electron/releases/download/v2.0.2/electron-v2.0.2-linux-ia32.zip",
+      "installPath": ".electron/2.0.2",
+      "platforms": [
+        "linux"
+      ],
+      "architectures": [
+        "x86",
+        "i686"
+      ],
+      "binaries": [
+        "./electron"
+      ],
+      "platformId": "linux-x86"
+    },
+    {
+      "description": "Electron for Linux (x64)",
+      "url": "https://github.com/electron/electron/releases/download/v2.0.2/electron-v2.0.2-linux-x64.zip",
+      "installPath": ".electron/2.0.2",
+      "platforms": [
+        "linux"
+      ],
+      "architectures": [
+        "x86_64"
+      ],
+      "binaries": [
+        "./electron"
+      ],
+      "platformId": "linux-x64"
+    }
+  ],
   "main": "./out/src/extension",
   "activationEvents": [
     "onDebugInitialConfigurations",

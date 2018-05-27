@@ -1,4 +1,0 @@
-[submodule "electron"]
-	path = electron
-	url = git@github.com:Kode/electron_bin.git
-	branch = master
