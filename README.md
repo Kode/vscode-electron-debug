@@ -28,9 +28,3 @@ project directory.
     ]
 }
 ```
-
-## Release Notes
-
-### 18.5.2
-
-Initial public release

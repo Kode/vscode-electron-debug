@@ -1,7 +1,7 @@
 {
   "name": "electron-debug",
   "displayName": "Debugger for Electron",
-  "version": "18.5.2",
+  "version": "18.5.3",
   "icon": "images/icon.png",
   "description": "%extension.description%",
   "repository": {
@@ -20,13 +20,14 @@
   ],
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
-    "vscode-chrome-debug-core": "^5.0.3",
-    "vscode-debugadapter": "^1.28.0-pre.2",
-    "vscode-nls": "^3.2.1",
     "http-proxy-agent": "2.1.0",
     "https-proxy-agent": "2.2.1",
+    "mkdirp": "^0.5.1",
+    "node-filter-async": "0.0.4",
     "rxjs": "5.5.6",
-    "node-filter-async": "0.0.4"
+    "vscode-chrome-debug-core": "^5.0.3",
+    "vscode-debugadapter": "^1.28.0-pre.2",
+    "vscode-nls": "^3.2.1"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.35",
