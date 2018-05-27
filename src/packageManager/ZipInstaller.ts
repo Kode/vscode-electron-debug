@@ -7,18 +7,13 @@ import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
 import * as yauzl from 'yauzl';
-import { EventStream } from '../EventStream';
-import { InstallationStart, ZipError } from '../omnisharp/loggingEvents';
 import { NestedError } from '../NestedError';
 
-export async function InstallZip(buffer: Buffer, description: string, destinationInstallPath: string, binaries: string[], eventStream: EventStream): Promise<void> {
-    eventStream.post(new InstallationStart(description));
-
+export async function InstallZip(buffer: Buffer, description: string, destinationInstallPath: string, binaries: string[]): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         yauzl.fromBuffer(buffer, { lazyEntries: true }, (err, zipFile) => {
             if (err) {
                 let message = 'Electron Extension was unable to download its dependencies. Please check your internet connection. If you use a proxy server, please visit https://aka.ms/VsCodeCsharpNetworking';
-                eventStream.post(new ZipError(message));
                 return reject(new NestedError(message));
             }
 

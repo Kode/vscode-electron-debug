@@ -5,8 +5,6 @@
 
 import * as util from './common';
 import { PlatformInformation } from './platform';
-import { PackageInstallation, /*LogPlatformInfo,*/ InstallationSuccess, InstallationFailure } from './omnisharp/loggingEvents';
-import { EventStream } from './EventStream';
 import { DownloadAndInstallPackages } from './packageManager/PackageManager';
 import { Package } from './packageManager/Package';
 import { NetworkSettingsProvider } from './NetworkSettings';
@@ -19,13 +17,11 @@ export class ElectronExtDownloader {
 
     public constructor(
         private networkSettingsProvider: NetworkSettingsProvider,
-        private eventStream: EventStream,
         private packageJSON: any,
         private platformInfo: PlatformInformation) {
     }
 
     public async installRuntimeDependencies(): Promise<boolean> {
-        this.eventStream.post(new PackageInstallation('Electron dependencies'));
         let installationStage = 'touchBeginFile';
 
         try {
@@ -35,13 +31,11 @@ export class ElectronExtDownloader {
             let runTimeDependencies = GetRunTimeDependenciesPackages(this.packageJSON);
             runTimeDependencies.forEach(pkg => ResolveFilePaths(pkg));
             installationStage = 'downloadAndInstallPackages';
-            await DownloadAndInstallPackages(runTimeDependencies, this.networkSettingsProvider, this.platformInfo, this.eventStream);
+            await DownloadAndInstallPackages(runTimeDependencies, this.networkSettingsProvider, this.platformInfo);
             installationStage = 'touchLockFile';
             await util.touchInstallFile(util.InstallFileType.Lock);
-            this.eventStream.post(new InstallationSuccess());
             return true;
         } catch (error) {
-            this.eventStream.post(new InstallationFailure(installationStage, error));
             return false;
         }
         finally {

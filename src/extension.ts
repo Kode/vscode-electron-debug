@@ -7,7 +7,6 @@ import { join } from 'path';
 import { ElectronExtDownloader } from './ElectronExtDownloader';
 import ElectronExtensionExports from './ElectronExtensionExports';
 import { PlatformInformation } from './platform';
-import { EventStream } from './EventStream';
 import { vscodeNetworkSettingsProvider, NetworkSettingsProvider } from './NetworkSettings';
 import * as util from './common';
 
@@ -24,8 +23,6 @@ export async function activate(context: vscode.ExtensionContext) {
     const extension = vscode.extensions.getExtension<ElectronExtensionExports>(extensionId);
     util.setExtensionPath(extension.extensionPath);
 
-    const eventStream = new EventStream();
-
     let platformInfo: PlatformInformation;
     try {
         platformInfo = await PlatformInformation.GetCurrent();
@@ -35,7 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     let networkSettingsProvider = vscodeNetworkSettingsProvider(vscode as any);
 
-    let runtimeDependenciesExist = await ensureRuntimeDependencies(extension, eventStream, platformInfo, networkSettingsProvider);
+    let runtimeDependenciesExist = await ensureRuntimeDependencies(extension, platformInfo, networkSettingsProvider);
 
     context.subscriptions.push(vscode.commands.registerCommand('extension.electron-debug.toggleSkippingFile', toggleSkippingFile));
     context.subscriptions.push(vscode.commands.registerCommand('extension.electron-debug.toggleSmartStep', toggleSmartStep));
@@ -139,11 +136,11 @@ function unescapeTargetTitle(title: string): string {
         .replace(/&quot;/g, '"');
 }
 
-async function ensureRuntimeDependencies(extension: vscode.Extension<ElectronExtensionExports>, eventStream: EventStream, platformInfo: PlatformInformation, networkSettingsProvider: NetworkSettingsProvider): Promise<boolean> {
+async function ensureRuntimeDependencies(extension: vscode.Extension<ElectronExtensionExports>, platformInfo: PlatformInformation, networkSettingsProvider: NetworkSettingsProvider): Promise<boolean> {
     return util.installFileExists(util.InstallFileType.Lock)
         .then(exists => {
             if (!exists) {
-                const downloader = new ElectronExtDownloader(networkSettingsProvider, eventStream, extension.packageJSON, platformInfo);
+                const downloader = new ElectronExtDownloader(networkSettingsProvider, extension.packageJSON, platformInfo);
                 return downloader.installRuntimeDependencies();
             } else {
                 return true;
