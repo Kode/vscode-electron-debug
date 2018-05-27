@@ -10,8 +10,8 @@ import * as path from 'path';
 
 let extensionPath: string;
 
-export function setExtensionPath(path: string) {
-    extensionPath = path;
+export function setExtensionPath(extPath: string) {
+    extensionPath = extPath;
 }
 
 export function getExtensionPath() {
@@ -46,11 +46,9 @@ export async function execChildProcess(command: string, workingDirectory: string
         cp.exec(command, { cwd: workingDirectory, maxBuffer: 500 * 1024 }, (error, stdout, stderr) => {
             if (error) {
                 reject(error);
-            }
-            else if (stderr && stderr.length > 0) {
+            } else if (stderr && stderr.length > 0) {
                 reject(new Error(stderr));
-            }
-            else {
+            } else {
                 resolve(stdout);
             }
         });
@@ -59,8 +57,7 @@ export async function execChildProcess(command: string, workingDirectory: string
 
 export async function getUnixChildProcessIds(pid: number): Promise<number[]> {
     return new Promise<number[]>((resolve, reject) => {
-        let ps = cp.exec('ps -A -o ppid,pid', (error, stdout, stderr) =>
-        {
+        let ps = cp.exec('ps -A -o ppid,pid', (error, stdout, stderr) => {
             if (error) {
                 return reject(error);
             }
@@ -79,9 +76,9 @@ export async function getUnixChildProcessIds(pid: number): Promise<number[]> {
             let children = [];
 
             for (let pair of pairs) {
-                let ppid = parseInt(pair[0]);
+                let ppid = parseInt(pair[0], 10);
                 if (ppid === pid) {
-                    children.push(parseInt(pair[1]));
+                    children.push(parseInt(pair[1], 10));
                 }
             }
 
@@ -97,8 +94,7 @@ export async function fileExists(filePath: string): Promise<boolean> {
         fs.stat(filePath, (err, stats) => {
             if (stats && stats.isFile()) {
                 resolve(true);
-            }
-            else {
+            } else {
                 resolve(false);
             }
         });
@@ -171,9 +167,9 @@ export function convertNativePathToPosix(pathString: string): string {
 
 /**
  * This function checks to see if a subfolder is part of folder.
- * 
+ *
  * Assumes subfolder and folder are absolute paths and have consistent casing.
- * 
+ *
  * @param subfolder subfolder to check if it is part of the folder parameter
  * @param folder folder to check aganist
  */

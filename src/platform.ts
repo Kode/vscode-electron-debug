@@ -48,8 +48,7 @@ export class LinuxDistribution {
 
         if (this.name === unknown || allowedList.indexOf(this.name) >= 0) {
             return this.toString();
-        }
-        else {
+        } else {
             // Having a hash of the name will be helpful to identify spikes in the 'other'
             // bucket when a new distro becomes popular and needs to be added to the
             // allowed list above.
@@ -67,8 +66,7 @@ export class LinuxDistribution {
             fs.readFile(filePath, 'utf8', (error, data) => {
                 if (error) {
                     reject(error);
-                }
-                else {
+                } else {
                     resolve(LinuxDistribution.FromReleaseInfo(data));
                 }
             });
@@ -78,7 +76,7 @@ export class LinuxDistribution {
     public static FromReleaseInfo(releaseInfo: string, eol: string = os.EOL): LinuxDistribution {
         let name = unknown;
         let version = unknown;
-        let idLike : string[] = null;
+        let idLike: string[] = null;
 
         const lines = releaseInfo.split(eol);
         for (let line of lines) {
@@ -96,12 +94,10 @@ export class LinuxDistribution {
 
                 if (key === 'ID') {
                     name = value;
-                }
-                else if (key === 'VERSION_ID') {
+                } else if (key === 'VERSION_ID') {
                     version = value;
-                }
-                else if (key === 'ID_LIKE') {
-                    idLike = value.split(" ");
+                } else if (key === 'ID_LIKE') {
+                    idLike = value.split(' ');
                 }
 
                 if (name !== unknown && version !== unknown && idLike !== null) {
@@ -118,8 +114,7 @@ export class PlatformInformation {
     public constructor(
         public platform: string,
         public architecture: string,
-        public distribution: LinuxDistribution = null)
-    {
+        public distribution: LinuxDistribution = null) {
     }
 
     public isWindows(): boolean {
@@ -182,7 +177,7 @@ export class PlatformInformation {
         }
 
         const platformData: [string, LinuxDistribution] = await Promise.all([architecturePromise, distributionPromise]);
-        
+
         return new PlatformInformation(platform, platformData[0], platformData[1]);
     }
 
@@ -190,8 +185,7 @@ export class PlatformInformation {
         return new Promise<string>((resolve, reject) => {
             if (process.env.PROCESSOR_ARCHITECTURE === 'x86' && process.env.PROCESSOR_ARCHITEW6432 === undefined) {
                 resolve('x86');
-            }
-            else {
+            } else {
                 resolve('x86_64');
             }
         });
