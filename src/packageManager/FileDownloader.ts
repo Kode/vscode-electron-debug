@@ -5,9 +5,9 @@
 
 import * as https from 'https';
 import * as util from '../common';
-import { EventStream } from "../EventStream";
-import { DownloadSuccess, DownloadStart, DownloadFallBack, DownloadFailure, DownloadProgress, DownloadSizeObtained } from "../omnisharp/loggingEvents";
-import { NestedError } from "../NestedError";
+import { EventStream } from '../EventStream';
+import { DownloadSuccess, DownloadStart, DownloadFallBack, DownloadFailure, DownloadProgress, DownloadSizeObtained } from '../omnisharp/loggingEvents';
+import { NestedError } from '../NestedError';
 import { parse as parseUrl } from 'url';
 import { getProxyAgent } from './proxy';
 import { NetworkSettingsProvider } from '../NetworkSettings';
@@ -19,9 +19,8 @@ export async function DownloadFile(description: string, eventStream: EventStream
         let buffer = await downloadFile(description, url, eventStream, networkSettingsProvider);
         eventStream.post(new DownloadSuccess(` Done!`));
         return buffer;
-    }
-    catch (primaryUrlError) {
-        // If the package has a fallback Url, and downloading from the primary Url failed, try again from 
+    } catch (primaryUrlError) {
+        // If the package has a fallback Url, and downloading from the primary Url failed, try again from
         // the fallback. This is used for debugger packages as some users have had issues downloading from
         // the CDN link
         if (fallbackUrl) {
@@ -30,12 +29,10 @@ export async function DownloadFile(description: string, eventStream: EventStream
                 let buffer = await downloadFile(description, fallbackUrl, eventStream, networkSettingsProvider);
                 eventStream.post(new DownloadSuccess(' Done!'));
                 return buffer;
-            }
-            catch (fallbackUrlError) {
+            } catch (fallbackUrlError) {
                 throw primaryUrlError;
             }
-        }
-        else {
+        } else {
             throw primaryUrlError;
         }
     }
@@ -61,9 +58,7 @@ async function downloadFile(description: string, urlString: string, eventStream:
             if (response.statusCode === 301 || response.statusCode === 302) {
                 // Redirect - download from new location
                 return resolve(downloadFile(description, response.headers.location, eventStream, networkSettingsProvider));
-            }
-
-            else if (response.statusCode != 200) {
+            } else if (response.statusCode !== 200) {
                 // Download failed - print error message
                 eventStream.post(new DownloadFailure(`failed (error code '${response.statusCode}')`));
                 return reject(new NestedError(response.statusCode.toString()));
@@ -93,7 +88,7 @@ async function downloadFile(description: string, urlString: string, eventStream:
             });
 
             response.on('error', err => {
-                reject(new NestedError(`Failed to download from ${urlString}. Error Message: ${err.message} || 'NONE'}`, err)); 
+                reject(new NestedError(`Failed to download from ${urlString}. Error Message: ${err.message} || 'NONE'}`, err));
             });
         });
 

@@ -33,7 +33,7 @@ export async function activate(context: vscode.ExtensionContext) {
         // eventStream.post(new ActivationFailure());
     }
 
-    let networkSettingsProvider = vscodeNetworkSettingsProvider(vscode);
+    let networkSettingsProvider = vscodeNetworkSettingsProvider(vscode as any);
 
     let runtimeDependenciesExist = await ensureRuntimeDependencies(extension, eventStream, platformInfo, networkSettingsProvider);
 

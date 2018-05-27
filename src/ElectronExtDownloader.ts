@@ -40,16 +40,14 @@ export class ElectronExtDownloader {
             await util.touchInstallFile(util.InstallFileType.Lock);
             this.eventStream.post(new InstallationSuccess());
             return true;
-        }
-        catch (error) {
+        } catch (error) {
             this.eventStream.post(new InstallationFailure(installationStage, error));
             return false;
         }
         finally {
             try {
                 util.deleteInstallFile(util.InstallFileType.Begin);
-            }
-            catch (error) { }
+            } catch (error) { }
         }
     }
 }
@@ -59,5 +57,5 @@ export function GetRunTimeDependenciesPackages(packageJSON: any): Package[] {
         return JSON.parse(JSON.stringify(<Package[]>packageJSON.runtimeDependencies));
     }
 
-    throw new Error("No runtime dependencies found");
+    throw new Error('No runtime dependencies found');
 }

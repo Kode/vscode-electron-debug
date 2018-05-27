@@ -7,8 +7,8 @@ import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
 import * as yauzl from 'yauzl';
-import { EventStream } from "../EventStream";
-import { InstallationStart, ZipError } from "../omnisharp/loggingEvents";
+import { EventStream } from '../EventStream';
+import { InstallationStart, ZipError } from '../omnisharp/loggingEvents';
 import { NestedError } from '../NestedError';
 
 export async function InstallZip(buffer: Buffer, description: string, destinationInstallPath: string, binaries: string[], eventStream: EventStream): Promise<void> {
@@ -17,7 +17,7 @@ export async function InstallZip(buffer: Buffer, description: string, destinatio
     return new Promise<void>((resolve, reject) => {
         yauzl.fromBuffer(buffer, { lazyEntries: true }, (err, zipFile) => {
             if (err) {
-                let message = "Electron Extension was unable to download its dependencies. Please check your internet connection. If you use a proxy server, please visit https://aka.ms/VsCodeCsharpNetworking";
+                let message = 'Electron Extension was unable to download its dependencies. Please check your internet connection. If you use a proxy server, please visit https://aka.ms/VsCodeCsharpNetworking';
                 eventStream.post(new ZipError(message));
                 return reject(new NestedError(message));
             }
@@ -29,24 +29,23 @@ export async function InstallZip(buffer: Buffer, description: string, destinatio
 
                 if (entry.fileName.endsWith('/')) {
                     // Directory - create it
-                    mkdirp(absoluteEntryPath, { mode: 0o775 }, err => {
-                        if (err) {
-                            return reject(new NestedError('Error creating directory for zip directory entry:' + err.code || '', err));
+                    mkdirp(absoluteEntryPath, { mode: 0o775 }, direrr => {
+                        if (direrr) {
+                            return reject(new NestedError('Error creating directory for zip directory entry:' + direrr.code || '', direrr));
                         }
 
                         zipFile.readEntry();
                     });
-                }
-                else {
+                } else {
                     // File - extract it
-                    zipFile.openReadStream(entry, (err, readStream) => {
-                        if (err) {
-                            return reject(new NestedError('Error reading zip stream', err));
+                    zipFile.openReadStream(entry, (readerr, readStream) => {
+                        if (readerr) {
+                            return reject(new NestedError('Error reading zip stream', readerr));
                         }
 
-                        mkdirp(path.dirname(absoluteEntryPath), { mode: 0o775 }, err => {
-                            if (err) {
-                                return reject(new NestedError('Error creating directory for zip file entry', err));
+                        mkdirp(path.dirname(absoluteEntryPath), { mode: 0o775 }, direrr => {
+                            if (direrr) {
+                                return reject(new NestedError('Error creating directory for zip file entry', direrr));
                             }
 
                             // Make sure executable files have correct permissions when extracted
@@ -80,8 +79,8 @@ export async function InstallZip(buffer: Buffer, description: string, destinatio
                 resolve();
             });
 
-            zipFile.on('error', err => {
-                reject(new NestedError('Zip File Error:' + err.code || '', err));
+            zipFile.on('error', ziperr => {
+                reject(new NestedError('Zip File Error:' + ziperr.code || '', ziperr));
             });
         });
     });
