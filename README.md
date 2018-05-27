@@ -1,7 +1,7 @@
 # Electron debug extension
 
 A VS Code extension to debug your JavaScript code in Electron.
-This is a fork of vscode-chrome-debug which includes and runs Electron for Windows (x64), Linux (x64) and macOS. This extension does nothing that can not be done via vscode-chrome-debug and a proper launch configuration and exists purely for convenience.
+This is a fork of vscode-chrome-debug which automatically downloads and runs Electron. This extension does nothing which fundamentally can not be done via vscode-chrome-debug and a proper launch configuration and exists purely for convenience.
 
 See https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome for more detailed information.
 
