@@ -1,3 +1,7 @@
+### 18.5.6
+
+Fix icon and title description
+
 ### 18.5.5
 
 Fix dependencies some more
