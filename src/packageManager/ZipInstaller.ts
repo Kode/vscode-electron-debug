@@ -48,10 +48,6 @@ export async function InstallZip(buffer: Buffer, description: string, destinatio
                                 ? 0o755
                                 : 0o664;
 
-                            if (absoluteEntryPath.indexOf('resources') >= 0) {
-                                console.log(absoluteEntryPath);
-                            }
-
                             // Prevent Electron from kicking in special behavior when opening a write-stream to a .asar file
                             let originalAbsoluteEntryPath = absoluteEntryPath;
                             if (absoluteEntryPath.endsWith('.asar')) {
