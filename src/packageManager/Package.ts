@@ -11,6 +11,7 @@ export interface Package {
     platforms: string[];
     architectures: string[];
     binaries: string[];
+    links: string[];
     platformId?: string;
     // Path to use to test if the package has already been installed
     installTestPath?: string;

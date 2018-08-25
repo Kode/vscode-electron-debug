@@ -1,7 +1,7 @@
 {
   "name": "electron-debug",
   "displayName": "Debugger for Electron",
-  "version": "18.5.6",
+  "version": "18.8.0",
   "icon": "images/icon.png",
   "description": "%extension.description%",
   "repository": {
@@ -96,6 +96,27 @@
       ],
       "binaries": [
         "./Electron.app/Contents/MacOS/Electron"
+      ],
+      "links": [
+        "./Electron.app/Contents/Frameworks/Electron Framework.framework/Electron Framework",
+        "./Electron.app/Contents/Frameworks/Electron Framework.framework/Libraries",
+        "./Electron.app/Contents/Frameworks/Electron Framework.framework/Resources",
+        "./Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/Current",
+        "./Electron.app/Contents/Frameworks/Mantle.framework/Headers",
+        "./Electron.app/Contents/Frameworks/Mantle.framework/Mantle",
+        "./Electron.app/Contents/Frameworks/Mantle.framework/Modules",
+        "./Electron.app/Contents/Frameworks/Mantle.framework/Resources",
+        "./Electron.app/Contents/Frameworks/Mantle.framework/Versions/Current",
+        "./Electron.app/Contents/Frameworks/ReactiveCocoa.framework/Headers",
+        "./Electron.app/Contents/Frameworks/ReactiveCocoa.framework/Modules",
+        "./Electron.app/Contents/Frameworks/ReactiveCocoa.framework/ReactiveCocoa",
+        "./Electron.app/Contents/Frameworks/ReactiveCocoa.framework/Resources",
+        "./Electron.app/Contents/Frameworks/ReactiveCocoa.framework/Versions/Current",
+        "./Electron.app/Contents/Frameworks/Squirrel.framework/Headers",
+        "./Electron.app/Contents/Frameworks/Squirrel.framework/Modules",
+        "./Electron.app/Contents/Frameworks/Squirrel.framework/Resources",
+        "./Electron.app/Contents/Frameworks/Squirrel.framework/Squirrel",
+        "./Electron.app/Contents/Frameworks/Squirrel.framework/Versions/Current"
       ],
       "platformId": "osx"
     },

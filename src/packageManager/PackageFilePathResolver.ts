@@ -11,6 +11,7 @@ export function ResolveFilePaths(pkg: Package) {
     pkg.installTestPath = ResolvePackageTestPath(pkg);
     pkg.installPath = ResolveBaseInstallPath(pkg);
     pkg.binaries = ResolvePackageBinaries(pkg);
+    pkg.links = ResolvePackageLinks(pkg);
 }
 
 export function ResolvePackageTestPath(pkg: Package): string {
@@ -24,6 +25,14 @@ export function ResolvePackageTestPath(pkg: Package): string {
 function ResolvePackageBinaries(pkg: Package) {
     if (pkg.binaries) {
         return pkg.binaries.map(value => path.resolve(ResolveBaseInstallPath(pkg), value));
+    }
+
+    return null;
+}
+
+function ResolvePackageLinks(pkg: Package) {
+    if (pkg.links) {
+        return pkg.links.map(value => path.resolve(ResolveBaseInstallPath(pkg), value));
     }
 
     return null;
