@@ -95,7 +95,14 @@
         "darwin"
       ],
       "binaries": [
-        "./Electron.app/Contents/MacOS/Electron"
+        "./Electron.app/Contents/MacOS/Electron",
+        "./Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework",
+        "./Electron.app/Contents/Frameworks/Mantle.framework/Versions/A/Mantle",
+        "./Electron.app/Contents/Frameworks/ReactiveCocoa.framework/Versions/A/ReactiveCocoa",
+        "./Electron.app/Contents/Frameworks/Squirrel.framework/Versions/A/Squirrel",
+        "./Electron.app/Contents/Frameworks/Electron Helper.app/Contents/MacOS/Electron Helper",
+        "./Electron.app/Contents/Frameworks/Electron Helper EH.app/Contents/MacOS/Electron Helper EH",
+        "./Electron.app/Contents/Frameworks/Electron Helper NP.app/Contents/MacOS/Electron Helper NP"
       ],
       "links": [
         "./Electron.app/Contents/Frameworks/Electron Framework.framework/Electron Framework",

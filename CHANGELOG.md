@@ -1,3 +1,7 @@
+### 18.8.0
+
+Fix macOS version
+
 ### 18.5.6
 
 Fix icon and title description
