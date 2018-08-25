@@ -1,3 +1,7 @@
+### 18.8.1
+
+Compile extension
+
 ### 18.8.0
 
 Fix macOS version
