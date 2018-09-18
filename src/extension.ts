@@ -32,7 +32,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     let networkSettingsProvider = vscodeNetworkSettingsProvider(vscode as any);
 
-    let runtimeDependenciesExist = await ensureRuntimeDependencies(extension, platformInfo, networkSettingsProvider);
+    if (!vscode.env.appName.includes('Kode')) {
+        await ensureRuntimeDependencies(extension, platformInfo, networkSettingsProvider);
+    }
 
     context.subscriptions.push(vscode.commands.registerCommand('extension.electron-debug.toggleSkippingFile', toggleSkippingFile));
     context.subscriptions.push(vscode.commands.registerCommand('extension.electron-debug.toggleSmartStep', toggleSmartStep));
@@ -88,7 +90,23 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
             }
         }
 
-        config.electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, '.electron', '2.0.2');
+        if (vscode.env.appName.includes('Kode')) {
+            let exec = process.execPath;
+            if (exec.indexOf('Kode Studio Helper') >= 0) {
+                const dir = exec.substring(0, exec.lastIndexOf('/'));
+                exec = join(dir, '..', '..', '..', '..', 'MacOS', 'Electron');
+            }
+            config.electronPath = exec;
+        } else {
+            const electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, '.electron', '2.0.2');
+            if (process.platform === 'darwin') {
+                config.electronPath = join(electronDir, 'Electron.app', 'Contents', 'MacOS', 'Electron');
+            } else if (process.platform === 'win32') {
+                config.electronPath = join(electronDir, 'electron.exe');
+            } else {
+                config.electronPath = join(electronDir, 'electron');
+            }
+        }
         return config;
     }
 }
