@@ -76,7 +76,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 
             // Start with remote debugging enabled
             const port = args.port || Math.floor((Math.random() * 10000) + 10000);
-            const chromeArgs: string[] = [];
+            const chromeArgs: string[] = ['--chromedebug'];
             const chromeEnv: {[key: string]: string} = args.env || null;
             const chromeWorkingDir: string = args.cwd || null;
 
