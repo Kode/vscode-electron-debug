@@ -1,3 +1,7 @@
+### 18.11.0
+
+Merge vscode-chrome-debug v4.11.0 and update Electron to v3.0.8
+
 ### 18.8.1
 
 Compile extension
