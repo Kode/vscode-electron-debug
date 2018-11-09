@@ -1,7 +1,7 @@
 {
 	"extension.description": "Depure seu código JavaScript no navegador Chrome ou em qualquer outro destino que suporte o protocolo de depuração do Chrome.",
-	"chrome.toggleSkipping.title": "Chrome: Toggle Skipping This File",
-	"chrome.toggleSmartStep.title": "Chrome: Toggle Smart Step",
+	"chrome.toggleSkipping.title": "Chrome: Alternar Ignorando este arquivo",
+	"chrome.toggleSmartStep.title": "Chrome: alternar etapa inteligente",
 	"chrome.port.description": "Porta a ser usada para depuração remota do Chrome.",
 	"chrome.address.description": "Endereço TCP/IP da porta de depuração",
 	"chrome.file.description": "Um arquivo HTML local para abrir no navegador",
@@ -23,6 +23,7 @@
 	"chrome.timeout.description": "Esperar este número de milissegundos para se reconectar ao Chrome. O padrão é 10000 ms.",
 	"chrome.disableNetworkCache.description": "Controla se deve ignorar o cache de rede para cada solicitação",
 	"chrome.urlFilter.description": "Procura uma página com esta url e anexa-a à ela, se encontrado. Pode ter caracteres curingas *.",
+	"chrome.targetTypes.description": "An array of acceptable target types. The default is `[\"page\"]`.",
 	"chrome.showAsyncStacks.description": "Mostra as chamadas assíncronas que levam à pilha de chamadas atual",
 	"chrome.breakOnLoad.description": "Funcionalidade experimental. Se verdadeiro, o adaptador de depuração tentará definir pontos de parada nos scripts antes que eles sejam carregados, para que eles possam ser atingidos no início destes scripts. Há impacto de performance.",
 	"chrome.breakOnLoadStrategy.description": "A estratégia a ser usada para breakOnLoad.",
