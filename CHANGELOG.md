@@ -1,3 +1,7 @@
+### 20.1.0
+
+Update Electron to v7.1.9
+
 ### 18.11.1
 
 Update Electron to v4.0.1

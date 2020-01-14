@@ -98,7 +98,7 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
             }
             config.electronPath = exec;
         } else {
-            const electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, '.electron', '4.0.1');
+            const electronDir = join(vscode.extensions.getExtension('kodetech.electron-debug').extensionPath, '.electron', '7.1.9');
             if (process.platform === 'darwin') {
                 config.electronPath = join(electronDir, 'Electron.app', 'Contents', 'MacOS', 'Electron');
             } else if (process.platform === 'win32') {
