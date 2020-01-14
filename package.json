@@ -26,13 +26,13 @@
     "natives": "^1.1.6",
     "node-filter-async": "0.0.4",
     "rxjs": "5.5.6",
-    "vscode": "^1.1.36",
     "vscode-chrome-debug-core": "^6.7.31",
     "vscode-debugadapter": "^1.32.1",
     "vscode-nls": "^4.0.0",
     "yauzl": "^2.9.1"
   },
   "devDependencies": {
+    "vscode": "^1.1.36",
     "@types/mocha": "^2.2.35",
     "@types/mockery": "^1.4.29",
     "@types/node": "^8.0.58",
