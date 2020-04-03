@@ -23,9 +23,15 @@
   ],
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
+    "http-proxy-agent": "^4.0.1",
+    "https-proxy-agent": "^5.0.0",
+    "mkdirp": "^1.0.4",
+    "node-filter-async": "^2.0.0",
+    "rxjs": "^6.5.5",
     "vscode-chrome-debug-core": "^6.8.7",
     "vscode-debugadapter": "^1.37.1",
-    "vscode-nls": "^4.1.1"
+    "vscode-nls": "^4.1.1",
+    "yauzl": "^2.10.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
