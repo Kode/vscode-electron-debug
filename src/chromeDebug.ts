@@ -2,12 +2,16 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
+import * as nls from 'vscode-nls'; // MUST BE FIRST IMPORT
+nls.config({ bundleFormat: nls.BundleFormat.standalone });
+
 import { ChromeDebugSession, logger, UrlPathTransformer, BaseSourceMapTransformer, telemetry } from 'vscode-chrome-debug-core';
 import * as path from 'path';
 import * as os from 'os';
 import { defaultTargetFilter } from './utils';
 
 import { ChromeDebugAdapter } from './chromeDebugAdapter';
+import { ChromeProvidedPortConnection } from './chromeProvidedPortConnection';
 
 const EXTENSION_NAME = 'debugger-for-chrome';
 
@@ -19,7 +23,7 @@ ChromeDebugSession.run(ChromeDebugSession.getSession(
         extensionName: EXTENSION_NAME,
         logFilePath: path.resolve(os.tmpdir(), 'vscode-chrome-debug.txt'),
         targetFilter: defaultTargetFilter,
-
+        chromeConnection: ChromeProvidedPortConnection,
         pathTransformer: UrlPathTransformer,
         sourceMapTransformer: BaseSourceMapTransformer,
     }));

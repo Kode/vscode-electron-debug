@@ -13,10 +13,14 @@ import * as util from './common';
 import * as vscode from 'vscode';
 import * as Core from 'vscode-chrome-debug-core';
 import * as nls from 'vscode-nls';
+import * as path from 'path';
 
-import { defaultTargetFilter } from './utils';
+import { defaultTargetFilter, getTargetFilter } from './utils';
 
 const localize = nls.loadMessageBundle();
+
+const DEBUG_SETTINGS = 'debug.chrome';
+const USE_V3_SETTING = 'useV3';
 
 export async function activate(context: vscode.ExtensionContext) {
     const extensionId = 'kodetech.electron-debug';
@@ -74,7 +78,7 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
 
             let targets;
             try {
-                targets = await discovery.getAllTargets(config.address || '127.0.0.1', config.port, defaultTargetFilter, config.url || config.urlFilter);
+                targets = await discovery.getAllTargets(config.address || '127.0.0.1', config.port, config.targetTypes === undefined ? defaultTargetFilter : getTargetFilter(config.targetTypes), config.url || config.urlFilter);
             } catch (e) {
                 // Target not running?
             }
@@ -88,6 +92,16 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
 
                 config.websocketUrl = selectedTarget.websocketDebuggerUrl;
             }
+        }
+
+        resolveRemoteUris(folder, config);
+
+        const useV3 = !!vscode.workspace.getConfiguration(DEBUG_SETTINGS).get(USE_V3_SETTING)
+            || vscode.workspace.getConfiguration().get('debug.javascript.usePreview', false);
+
+        if (useV3) {
+            config['__workspaceFolder'] = '${workspaceFolder}';
+            config.type = 'pwa-chrome';
         }
 
         if (vscode.env.appName.includes('Kode')) {
@@ -111,14 +125,57 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
     }
 }
 
-function toggleSkippingFile(path: string): void {
-    if (!path) {
-        const activeEditor = vscode.window.activeTextEditor;
-        path = activeEditor && activeEditor.document.fileName;
+// Must match the strings in -core's remoteMapper.ts
+const remoteUriScheme = 'vscode-remote';
+const remotePathComponent = '__vscode-remote-uri__';
+
+const isWindows = process.platform === 'win32';
+function getFsPath(uri: vscode.Uri): string {
+    const fsPath = uri.fsPath;
+    return isWindows && !fsPath.match(/^[a-zA-Z]:/) ?
+        fsPath.replace(/\\/g, '/') : // Hack - undo the slash normalization that URI does when windows is the current platform
+        fsPath;
+}
+
+function mapRemoteClientUriToInternalPath(remoteUri: vscode.Uri): string {
+    const uriPath = getFsPath(remoteUri);
+    const driveLetterMatch = uriPath.match(/^[A-Za-z]:/);
+    let internalPath: string;
+    if (!!driveLetterMatch) {
+        internalPath = path.win32.join(driveLetterMatch[0], remotePathComponent, uriPath.substr(2));
+    } else {
+        internalPath = path.posix.join('/', remotePathComponent, uriPath);
     }
 
-    if (path && vscode.debug.activeDebugSession) {
-        const args: Core.IToggleSkipFileStatusArgs = typeof path === 'string' ? { path } : { sourceReference: path };
+    return internalPath;
+}
+
+function rewriteWorkspaceRoot(configObject: any, internalWorkspaceRootPath: string): void {
+    for (const key in configObject) {
+        if (typeof configObject[key] === 'string') {
+            configObject[key] = configObject[key].replace(/\$\{workspace(Root|Folder)\}/g, internalWorkspaceRootPath);
+        } else {
+            rewriteWorkspaceRoot(configObject[key], internalWorkspaceRootPath);
+        }
+    }
+}
+
+function resolveRemoteUris(folder: vscode.WorkspaceFolder | undefined, config: vscode.DebugConfiguration): void {
+    if (folder && folder.uri.scheme === remoteUriScheme) {
+        const internalPath = mapRemoteClientUriToInternalPath(folder.uri);
+        rewriteWorkspaceRoot(config, internalPath);
+        (<any>config).remoteAuthority = folder.uri.authority;
+    }
+}
+
+function toggleSkippingFile(aPath: string): void {
+    if (!aPath) {
+        const activeEditor = vscode.window.activeTextEditor;
+        aPath = activeEditor && activeEditor.document.fileName;
+    }
+
+    if (aPath && vscode.debug.activeDebugSession) {
+        const args: Core.IToggleSkipFileStatusArgs = typeof aPath === 'string' ? { path: aPath } : { sourceReference: aPath };
         vscode.debug.activeDebugSession.customRequest('toggleSkipFileStatus', args);
     }
 }

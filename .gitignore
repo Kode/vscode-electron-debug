@@ -10,6 +10,10 @@ node_modules/
 typings/
 testapp/.vscode/chrome
 testapp/**/out/
+test-results.xml
+bin
+obj
+logstestapp/**/out/
 
 install.Lock
 .electron/**
